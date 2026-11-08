@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101827">
+<title>Atomic Lab</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1220;--panel:#131e30;--panel2:#1a2940;--line:#2a3b55;--text:#edf4ff;--muted:#9db0c9;--accent:#62d6c8;--blue:#78aaff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 0,#182d48 0,transparent 35%),var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:30px 22px 22px;text-align:center}header .atom{font-size:34px}h1{font-size:clamp(27px,5vw,42px);margin:4px 0;color:#fff}header p{margin:0;color:var(--muted)}
+main{max-width:1250px;margin:auto;padding:0 18px 38px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 18px}.tab{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:10px 15px;border-radius:12px;cursor:pointer}.tab.active{background:var(--accent);color:#08201e;border-color:var(--accent);font-weight:700}
+.panel{background:linear-gradient(145deg,var(--panel),#101a2b);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:16px;box-shadow:0 12px 35px #0002}.section-title{margin:0 0 5px;font-size:20px}.hint{color:var(--muted);margin:0 0 14px;font-size:13px}
+.view{display:none}.view.active{display:block}.ptable-wrap{overflow-x:auto;padding-bottom:8px}.ptable{display:grid;grid-template-columns:repeat(18,minmax(48px,1fr));gap:5px;min-width:980px}.el{min-height:68px;border:1px solid #344862;border-radius:9px;background:#1a2a40;color:var(--text);padding:5px 3px;cursor:pointer;text-align:center;transition:.15s}.el:hover,.el.selected{border-color:var(--accent);background:#24485a;transform:translateY(-2px)}.el .z{font-size:10px;color:#b7c7da;display:block;text-align:left}.el b{font-size:18px;display:block;line-height:1.15}.el small{font-size:9px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.el.empty{visibility:hidden;pointer-events:none}
+.fblocks{display:grid;grid-template-columns:repeat(15,minmax(48px,1fr));gap:5px;min-width:820px;margin-top:7px}.fblock-label{grid-column:1/-1;color:var(--muted);font-size:12px;padding:5px 0 0}
+.details{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px;margin-top:14px}.metric{background:var(--panel2);padding:11px;border-radius:12px}.metric span{display:block;color:var(--muted);font-size:12px}.metric strong{font-size:19px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}.field{display:flex;flex-direction:column;gap:6px;margin:9px 0}.field label{color:var(--muted);font-size:13px}.field input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#0c1728;color:var(--text);font:inherit}.btn{background:var(--accent);color:#09201e;border:0;border-radius:10px;padding:11px 16px;font-weight:700;cursor:pointer}.btn.secondary{background:#253b58;color:var(--text);border:1px solid var(--line)}.result{background:#0c1728;border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:12px;min-height:60px}.error{color:#ff9d9d}.formula{font-size:27px;font-weight:700;letter-spacing:1px;color:var(--accent)}.table-scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:420px}td,th{border-bottom:1px solid var(--line);padding:8px;text-align:left}th{color:var(--muted);font-size:12px}footer{text-align:center;color:var(--muted);padding:20px;font-size:12px}
+@media(max-width:600px){main{padding:0 10px 28px}.panel{padding:13px}.tab{flex:1}.details{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header><div class="atom">⚛️</div><h1>Atomic Lab</h1><p>Explore elements, build atoms, and discover molecules.</p></header>
+<main>
+<nav class="tabs" aria-label="Lab sections">
+<button class="tab active" data-view="periodic">Periodic Table</button>
+<button class="tab" data-view="atom">Atom Builder</button>
+<button class="tab" data-view="molecule">Molecule Explorer</button>
+</nav>
+<section id="periodic" class="view active">
+<div class="panel"><h2 class="section-title">Periodic Table of Elements</h2><p class="hint">Select any element to inspect its atomic information. The table includes all 118 known elements.</p>
+<div class="ptable-wrap"><div id="ptable" class="ptable"></div><div id="fblocks" class="fblocks"></div></div>
+<div id="elementInfo" class="result">Choose an element from the table.</div></div>
+</section>
+<section id="atom" class="view">
+<div class="panel"><h2 class="section-title">Build an Atom</h2><p class="hint">Change the number of protons, neutrons, and electrons and see the resulting atom.</p>
+<div class="grid2">
+<div>
+<div class="field"><label for="protons">Protons</label><input id="protons" type="number" min="0" max="118" value="6"></div>
+<div class="field"><label for="neutrons">Neutrons</label><input id="neutrons" type="number" min="0" max="300" value="6"></div>
+<div class="field"><label for="electrons">Electrons</label><input id="electrons" type="number" min="0" max="200" value="6"></div>
+<button class="btn" id="buildAtom">Build atom</button>
+</div><div id="atomResult" class="result">Your atom's information will appear here.</div>
+</div></div>
+</section>
+<section id="molecule" class="view">
+<div class="panel"><h2 class="section-title">Molecule Explorer</h2><p class="hint">Enter a chemical formula. Parentheses and numbers are supported, for example H2O, CO2, Ca(OH)2, or Al2(SO4)3.</p>
+<div class="grid2"><div><div class="field"><label for="formulaInput">Chemical formula</label><input id="formulaInput" value="H2O" placeholder="Example: H2O"></div><button class="btn" id="analyzeFormula">Analyze molecule</button></div><div id="moleculeResult" class="result">Enter a formula to count its atoms and subatomic particles.</div></div>
+</div>
+</section>
+</main>
+<footer>Atomic Lab © 2026 · Science & Discovery ⚛️</footer>
+<script>
+const raw = [
+["H","Hydrogen",1.008,1,1],["He","Helium",4.003,18,1],
+["Li","Lithium",6.94,1,2],["Be","Beryllium",9.012,2,2],["B","Boron",10.81,13,2],["C","Carbon",12.011,14,2],["N","Nitrogen",14.007,15,2],["O","Oxygen",15.999,16,2],["F","Fluorine",18.998,17,2],["Ne","Neon",20.180,18,2],
+["Na","Sodium",22.990,1,3],["Mg","Magnesium",24.305,2,3],["Al","Aluminium",26.982,13,3],["Si","Silicon",28.085,14,3],["P","Phosphorus",30.974,15,3],["S","Sulfur",32.06,16,3],["Cl","Chlorine",35.45,17,3],["Ar","Argon",39.948,18,3],
+["K","Potassium",39.098,1,4],["Ca","Calcium",40.078,2,4],["Sc","Scandium",44.956,3,4],["Ti","Titanium",47.867,4,4],["V","Vanadium",50.942,5,4],["Cr","Chromium",51.996,6,4],["Mn","Manganese",54.938,7,4],["Fe","Iron",55.845,8,4],["Co","Cobalt",58.933,9,4],["Ni","Nickel",58.693,10,4],["Cu","Copper",63.546,11,4],["Zn","Zinc",65.38,12,4],["Ga","Gallium",69.723,13,4],["Ge","Germanium",72.630,14,4],["As","Arsenic",74.922,15,4],["Se","Selenium",78.971,16,4],["Br","Bromine",79.904,17,4],["Kr","Krypton",83.798,18,4],
+["Rb","Rubidium",85.468,1,5],["Sr","Strontium",87.62,2,5],["Y","Yttrium",88.906,3,5],["Zr","Zirconium",91.224,4,5],["Nb","Niobium",92.906,5,5],["Mo","Molybdenum",95.95,6,5],["Tc","Technetium",98,7,5],["Ru","Ruthenium",101.07,8,5],["Rh","Rhodium",102.906,9,5],["Pd","Palladium",106.42,10,5],["Ag","Silver",107.868,11,5],["Cd","Cadmium",112.414,12,5],["In","Indium",114.818,13,5],["Sn","Tin",118.710,14,5],["Sb","Antimony",121.760,15,5],["Te","Tellurium",127.60,16,5],["I","Iodine",126.904,17,5],["Xe","Xenon",131.293,18,5],
+["Cs","Caesium",132.905,1,6],["Ba","Barium",137.327,2,6],["La","Lanthanum",138.905,3,6],["Ce","Cerium",140.116,0,8],["Pr","Praseodymium",140.908,0,8],["Nd","Neodymium",144.242,0,8],["Pm","Promethium",145,0,8],["Sm","Samarium",150.36,0,8],["Eu","Europium",151.964,0,8],["Gd","Gadolinium",157.25,0,8],["Tb","Terbium",158.925,0,8],["Dy","Dysprosium",162.500,0,8],["Ho","Holmium",164.930,0,8],["Er","Erbium",167.259,0,8],["Tm","Thulium",168.934,0,8],["Yb","Ytterbium",173.045,0,8],["Lu","Lutetium",174.967,0,8],
+["Hf","Hafnium",178.49,4,6],["Ta","Tantalum",180.948,5,6],["W","Tungsten",183.84,6,6],["Re","Rhenium",186.207,7,6],["Os","Osmium",190.23,8,6],["Ir","Iridium",192.217,9,6],["Pt","Platinum",195.084,10,6],["Au","Gold",196.967,11,6],["Hg","Mercury",200.592,12,6],["Tl","Thallium",204.38,13,6],["Pb","Lead",207.2,14,6],["Bi","Bismuth",208.980,15,6],["Po","Polonium",209,16,6],["At","Astatine",210,17,6],["Rn","Radon",222,18,6],
+["Fr","Francium",223,1,7],["Ra","Radium",226,2,7],["Ac","Actinium",227,3,7],["Th","Thorium",232.038,0,9],["Pa","Protactinium",231.036,0,9],["U","Uranium",238.029,0,9],["Np","Neptunium",237,0,9],["Pu","Plutonium",244,0,9],["Am","Americium",243,0,9],["Cm","Curium",247,0,9],["Bk","Berkelium",247,0,9],["Cf","Californium",251,0,9],["Es","Einsteinium",252,0,9],["Fm","Fermium",257,0,9],["Md","Mendelevium",258,0,9],["No","Nobelium",259,0,9],["Lr","Lawrencium",266,0,9],
+["Rf","Rutherfordium",267,4,7],["Db","Dubnium",268,5,7],["Sg","Seaborgium",269,6,7],["Bh","Bohrium",270,7,7],["Hs","Hassium",277,8,7],["Mt","Meitnerium",278,9,7],["Ds","Darmstadtium",281,10,7],["Rg","Roentgenium",282,11,7],["Cn","Copernicium",285,12,7],["Nh","Nihonium",286,13,7],["Fl","Flerovium",289,14,7],["Mc","Moscovium",290,15,7],["Lv","Livermorium",293,16,7],["Ts","Tennessine",294,17,7],["Og","Oganesson",294,18,7]
+];
+const elements=raw.map((a,i)=>({z:i+1,s:a[0],name:a[1],mass:a[2],g:a[3],p:a[4]}));
+const bySymbol=Object.fromEntries(elements.map(e=>[e.s,e]));
+const table=document.getElementById('ptable'), fblocks=document.getElementById('fblocks');
+function elementButton(e){const b=document.createElement('button');b.className='el';b.title=e.name;b.innerHTML='<span class="z">'+e.z+'</span><b>'+e.s+'</b><small>'+e.name+'</small>';b.addEventListener('click',()=>showElement(e));return b}
+function showElement(e){document.querySelectorAll('.el').forEach(x=>x.classList.remove('selected'));const btn=[...document.querySelectorAll('.el')].find(x=>x.title===e.name);if(btn)btn.classList.add('selected');document.getElementById('elementInfo').innerHTML='<strong style="font-size:22px">'+e.name+' ('+e.s+')</strong><div class="details"><div class="metric"><span>Atomic number</span><strong>'+e.z+'</strong></div><div class="metric"><span>Approx. atomic mass</span><strong>'+e.mass+'</strong></div><div class="metric"><span>Protons</span><strong>'+e.z+'</strong></div><div class="metric"><span>Neutrons (approx.)</span><strong>'+Math.round(e.mass)-e.z+'</strong></div><div class="metric"><span>Electrons in neutral atom</span><strong>'+e.z+'</strong></div><div class="metric"><span>Period / group</span><strong>'+e.p+' / '+(e.g||'f-block')+'</strong></div></div>'}
+const occupied=new Map(elements.filter(e=>e.g>0).map(e=>[e.p+','+e.g,e]));
+for(let p=1;p<=7;p++)for(let g=1;g<=18;g++){const e=occupied.get(p+','+g);if(e)table.appendChild(elementButton(e));else{const d=document.createElement('div');d.className='el empty';table.appendChild(d)}}
+const lan=elements.filter(e=>e.p===8), act=elements.filter(e=>e.p===9);
+function addF(label,arr){const l=document.createElement('div');l.className='fblock-label';l.textContent=label;fblocks.appendChild(l);arr.forEach(e=>fblocks.appendChild(elementButton(e)))}
+addF('Lanthanides',lan);addF('Actinides',act);
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab,.view').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById(b.dataset.view).classList.add('active')}));
+function buildAtom(){const p=Number(document.getElementById('protons').value),n=Number(document.getElementById('neutrons').value),e=Number(document.getElementById('electrons').value),out=document.getElementById('atomResult');if(!Number.isInteger(p)||!Number.isInteger(n)||!Number.isInteger(e)||p<0||p>118||n<0||e<0||e>200){out.innerHTML='<span class="error">Enter valid whole numbers. Protons: 0–118; neutrons: 0 or more; electrons: 0–200.</span>';return}if(p===0){out.innerHTML='<strong>Not an element:</strong> An atomic nucleus must contain at least one proton.';return}const el=elements[p-1],charge=p-e;out.innerHTML='<strong style="font-size:22px">'+el.name+(charge===0?' atom':charge>0?' ion (+ '+charge+')':' ion (− '+Math.abs(charge)+')')+'</strong><div class="details"><div class="metric"><span>Element</span><strong>'+el.s+'</strong></div><div class="metric"><span>Atomic number</span><strong>'+p+'</strong></div><div class="metric"><span>Mass number</span><strong>'+(p+n)+'</strong></div><div class="metric"><span>Protons</span><strong>'+p+'</strong></div><div class="metric"><span>Neutrons</span><strong>'+n+'</strong></div><div class="metric"><span>Electrons</span><strong>'+e+'</strong></div><div class="metric"><span>Net charge</span><strong>'+(charge===0?'0':(charge>0?'+':'')+charge)+'</strong></div></div>'}
+document.getElementById('buildAtom').addEventListener('click',buildAtom);['protons','neutrons','electrons'].forEach(id=>document.getElementById(id).addEventListener('keydown',ev=>{if(ev.key==='Enter')buildAtom()}));buildAtom();
+function parseFormula(s){s=s.replace(/\s+/g,'');if(!s)throw Error('Please enter a chemical formula.');let i=0;function group(){const counts={};while(i<s.length&&s[i]!==')'){if(s[i]==='('){i++;const inner=group();if(s[i]!==')')throw Error('A closing parenthesis is missing.');i++;let num=readNum();for(const [k,v] of Object.entries(inner))counts[k]=(counts[k]||0)+v*num}else{const m=s.slice(i).match(/^([A-Z][a-z]?)/);if(!m)throw Error('Invalid formula near “'+s.slice(i)+'”.');const sym=m[1];if(!bySymbol[sym])throw Error('Unknown element symbol: '+sym);i+=sym.length;const num=readNum();counts[sym]=(counts[sym]||0)+num}}return counts}function readNum(){const m=s.slice(i).match(/^\d+/);if(!m)return 1;i+=m[0].length;const n=Number(m[0]);if(n<1||n>10000)throw Error('Formula numbers must be between 1 and 10000.');return n}const counts=group();if(i!==s.length)throw Error('There is an unmatched parenthesis or extra character.');return counts}
+function analyze(){const out=document.getElementById('moleculeResult');try{const counts=parseFormula(document.getElementById('formulaInput').value),rows=Object.entries(counts),total=rows.reduce((a,[,n])=>a+n,0);let protons=0,neutrons=0;rows.forEach(([sym,n])=>{const el=bySymbol[sym];protons+=el.z*n;neutrons+=(Math.round(el.mass)-el.z)*n});out.innerHTML='<div class="formula">'+document.getElementById('formulaInput').value.replace(/([0-9]+)/g,'<sub>$1</sub>')+'</div><div class="details"><div class="metric"><span>Total atoms</span><strong>'+total+'</strong></div><div class="metric"><span>Total protons</span><strong>'+protons+'</strong></div><div class="metric"><span>Approx. neutrons</span><strong>'+neutrons+'</strong></div><div class="metric"><span>Electrons (neutral atoms)</span><strong>'+protons+'</strong></div></div><div class="table-scroll"><table><thead><tr><th>Element</th><th>Symbol</th><th>Atoms</th></tr></thead><tbody>'+rows.map(([sym,n])=>'<tr><td>'+bySymbol[sym].name+'</td><td>'+sym+'</td><td>'+n+'</td></tr>').join('')+'</tbody></table></div><p class="hint">Particle totals are estimates based on rounded atomic masses and neutral atoms. Real molecules may have ions, isotopes, or different bonding structures.</p>'}catch(err){out.innerHTML='<span class="error">'+err.message+'</span>'}}
+document.getElementById('analyzeFormula').addEventListener('click',analyze);document.getElementById('formulaInput').addEventListener('keydown',e=>{if(e.key==='Enter')analyze()});analyze();
+</script>
+</body></html>
